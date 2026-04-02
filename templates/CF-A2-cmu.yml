@@ -321,6 +321,30 @@ Resources:
           docker build -t web-bff .
           docker run -d -p 80:80 --env-file ../.env.bff web-bff
 
+          cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
+          #!/bin/bash
+          cd /home/ec2-user/17647-a2
+          git fetch origin main
+          LOCAL=$(git rev-parse HEAD)
+          REMOTE=$(git rev-parse origin/main)
+          if [ "$LOCAL" != "$REMOTE" ]; then
+              git pull origin main
+              docker rm -f $(docker ps -aq) 2>/dev/null || true
+              
+              cd /home/ec2-user/17647-a2/customer-service
+              docker build -t customer-service .
+              docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+
+              cd /home/ec2-user/17647-a2/web-bff
+              docker build -t web-bff .
+              docker run -d -p 80:80 --env-file ../.env.bff web-bff
+              
+              docker image prune -a -f
+          fi
+          EOF_CRON
+          chmod +x /home/ec2-user/auto_update.sh
+          echo "* * * * * /home/ec2-user/auto_update.sh >> /tmp/auto_update.log 2>&1" | crontab -
+
       SubnetId: !Ref PublicSubnet1
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
@@ -374,6 +398,30 @@ Resources:
           cd /home/ec2-user/17647-a2/web-bff
           docker build -t web-bff .
           docker run -d -p 80:80 --env-file ../.env.bff web-bff
+
+          cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
+          #!/bin/bash
+          cd /home/ec2-user/17647-a2
+          git fetch origin main
+          LOCAL=$(git rev-parse HEAD)
+          REMOTE=$(git rev-parse origin/main)
+          if [ "$LOCAL" != "$REMOTE" ]; then
+              git pull origin main
+              docker rm -f $(docker ps -aq) 2>/dev/null || true
+              
+              cd /home/ec2-user/17647-a2/book-service
+              docker build -t book-service .
+              docker run -d -p 3000:3000 --env-file ../.env.book book-service
+
+              cd /home/ec2-user/17647-a2/web-bff
+              docker build -t web-bff .
+              docker run -d -p 80:80 --env-file ../.env.bff web-bff
+              
+              docker image prune -a -f
+          fi
+          EOF_CRON
+          chmod +x /home/ec2-user/auto_update.sh
+          echo "* * * * * /home/ec2-user/auto_update.sh >> /tmp/auto_update.log 2>&1" | crontab -
 
       SubnetId: !Ref PublicSubnet2
       SecurityGroupIds:
@@ -429,6 +477,30 @@ Resources:
           docker build -t mobile-bff .
           docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
 
+          cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
+          #!/bin/bash
+          cd /home/ec2-user/17647-a2
+          git fetch origin main
+          LOCAL=$(git rev-parse HEAD)
+          REMOTE=$(git rev-parse origin/main)
+          if [ "$LOCAL" != "$REMOTE" ]; then
+              git pull origin main
+              docker rm -f $(docker ps -aq) 2>/dev/null || true
+              
+              cd /home/ec2-user/17647-a2/book-service
+              docker build -t book-service .
+              docker run -d -p 3000:3000 --env-file ../.env.book book-service
+
+              cd /home/ec2-user/17647-a2/mobile-bff
+              docker build -t mobile-bff .
+              docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+              
+              docker image prune -a -f
+          fi
+          EOF_CRON
+          chmod +x /home/ec2-user/auto_update.sh
+          echo "* * * * * /home/ec2-user/auto_update.sh >> /tmp/auto_update.log 2>&1" | crontab -
+
       SubnetId: !Ref PublicSubnet1
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
@@ -481,6 +553,30 @@ Resources:
           cd /home/ec2-user/17647-a2/mobile-bff
           docker build -t mobile-bff .
           docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+
+          cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
+          #!/bin/bash
+          cd /home/ec2-user/17647-a2
+          git fetch origin main
+          LOCAL=$(git rev-parse HEAD)
+          REMOTE=$(git rev-parse origin/main)
+          if [ "$LOCAL" != "$REMOTE" ]; then
+              git pull origin main
+              docker rm -f $(docker ps -aq) 2>/dev/null || true
+              
+              cd /home/ec2-user/17647-a2/customer-service
+              docker build -t customer-service .
+              docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+
+              cd /home/ec2-user/17647-a2/mobile-bff
+              docker build -t mobile-bff .
+              docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+              
+              docker image prune -a -f
+          fi
+          EOF_CRON
+          chmod +x /home/ec2-user/auto_update.sh
+          echo "* * * * * /home/ec2-user/auto_update.sh >> /tmp/auto_update.log 2>&1" | crontab -
 
       SubnetId: !Ref PublicSubnet2
       SecurityGroupIds:
