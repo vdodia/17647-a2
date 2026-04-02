@@ -299,7 +299,7 @@ Resources:
           cd /home/ec2-user/17647-a2
 
           sleep 15
-          mysql -h "${DBClusterAuroraBookstore.Endpoint.Address}" -u "${DBUsername}" -p"${DBPassword}" < sql/init.sql
+          mysql -h "${DBClusterAuroraBookstore.Endpoint.Address}" -u "${DBUsername}" -p"${DBPassword}" < customer-service/sql/init.sql
 
           cat <<EOF > .env.customer
           DATABASE_HOST=${DBClusterAuroraBookstore.Endpoint.Address}
@@ -315,11 +315,11 @@ Resources:
 
           cd /home/ec2-user/17647-a2/customer-service
           docker build -t customer-service .
-          docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+          docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.customer customer-service
 
           cd /home/ec2-user/17647-a2/web-bff
           docker build -t web-bff .
-          docker run -d -p 80:80 --env-file ../.env.bff web-bff
+          docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff web-bff
 
           cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
           #!/bin/bash
@@ -333,11 +333,11 @@ Resources:
               
               cd /home/ec2-user/17647-a2/customer-service
               docker build -t customer-service .
-              docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+              docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.customer customer-service
 
               cd /home/ec2-user/17647-a2/web-bff
               docker build -t web-bff .
-              docker run -d -p 80:80 --env-file ../.env.bff web-bff
+              docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff web-bff
               
               docker image prune -a -f
           fi
@@ -393,11 +393,11 @@ Resources:
 
           cd /home/ec2-user/17647-a2/book-service
           docker build -t book-service .
-          docker run -d -p 3000:3000 --env-file ../.env.book book-service
+          docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.book book-service
 
           cd /home/ec2-user/17647-a2/web-bff
           docker build -t web-bff .
-          docker run -d -p 80:80 --env-file ../.env.bff web-bff
+          docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff web-bff
 
           cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
           #!/bin/bash
@@ -411,11 +411,11 @@ Resources:
               
               cd /home/ec2-user/17647-a2/book-service
               docker build -t book-service .
-              docker run -d -p 3000:3000 --env-file ../.env.book book-service
+              docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.book book-service
 
               cd /home/ec2-user/17647-a2/web-bff
               docker build -t web-bff .
-              docker run -d -p 80:80 --env-file ../.env.bff web-bff
+              docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff web-bff
               
               docker image prune -a -f
           fi
@@ -471,11 +471,11 @@ Resources:
 
           cd /home/ec2-user/17647-a2/book-service
           docker build -t book-service .
-          docker run -d -p 3000:3000 --env-file ../.env.book book-service
+          docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.book book-service
 
           cd /home/ec2-user/17647-a2/mobile-bff
           docker build -t mobile-bff .
-          docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+          docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff mobile-bff
 
           cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
           #!/bin/bash
@@ -489,11 +489,11 @@ Resources:
               
               cd /home/ec2-user/17647-a2/book-service
               docker build -t book-service .
-              docker run -d -p 3000:3000 --env-file ../.env.book book-service
+              docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.book book-service
 
               cd /home/ec2-user/17647-a2/mobile-bff
               docker build -t mobile-bff .
-              docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+              docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff mobile-bff
               
               docker image prune -a -f
           fi
@@ -548,11 +548,11 @@ Resources:
 
           cd /home/ec2-user/17647-a2/customer-service
           docker build -t customer-service .
-          docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+          docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.customer customer-service
 
           cd /home/ec2-user/17647-a2/mobile-bff
           docker build -t mobile-bff .
-          docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+          docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff mobile-bff
 
           cat <<'EOF_CRON' > /home/ec2-user/auto_update.sh
           #!/bin/bash
@@ -566,11 +566,11 @@ Resources:
               
               cd /home/ec2-user/17647-a2/customer-service
               docker build -t customer-service .
-              docker run -d -p 3000:3000 --env-file ../.env.customer customer-service
+              docker run -d --restart unless-stopped -p 3000:3000 --env-file ../.env.customer customer-service
 
               cd /home/ec2-user/17647-a2/mobile-bff
               docker build -t mobile-bff .
-              docker run -d -p 80:80 --env-file ../.env.bff mobile-bff
+              docker run -d --restart unless-stopped -p 80:80 --env-file ../.env.bff mobile-bff
               
               docker image prune -a -f
           fi
@@ -766,6 +766,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: WebBFFTargetGroup
+      HealthCheckPath: /status
+      HealthCheckProtocol: HTTP
       Port: 80
       Protocol: HTTP
       TargetGroupAttributes:
@@ -794,6 +796,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: MobileBFFTargetGroup
+      HealthCheckPath: /status
+      HealthCheckProtocol: HTTP
       Port: 80
       Protocol: HTTP
       TargetGroupAttributes:
@@ -822,6 +826,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: CustomerServiceTargetGroup
+      HealthCheckPath: /status
+      HealthCheckProtocol: HTTP
       Port: 3000
       Protocol: HTTP
       TargetGroupAttributes:
@@ -850,6 +856,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: BookServiceTargetGroup
+      HealthCheckPath: /status
+      HealthCheckProtocol: HTTP
       Port: 3000
       Protocol: HTTP
       TargetGroupAttributes:
